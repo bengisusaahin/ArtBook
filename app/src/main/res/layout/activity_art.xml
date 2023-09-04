@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:ems="10"
-        android:hint="Enter Year "
+        android:hint="@string/enter_year"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:ems="10"
-        android:hint="Enter Artist Name"
+        android:hint="@string/enter_artist_name"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/yearText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,15 +38,12 @@
         android:layout_height="212dp"
         android:layout_marginStart="51dp"
         android:layout_marginTop="150dp"
-        android:layout_marginBottom="195dp"
         android:onClick="selectImage"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.148"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/selectImage" />
+        app:srcCompat="@drawable/selectimage" />
 
     <EditText
         android:id="@+id/nameText"
@@ -54,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:ems="10"
-        android:hint="Enter Art Name"
+        android:hint="@string/enter_art_name"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/artistText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,9 +64,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:onClick="save"
-        android:text="Save"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/yearText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
