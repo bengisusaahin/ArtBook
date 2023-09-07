@@ -38,6 +38,7 @@ public class ArtActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        registerLauncher();
     }
 
     public void save(View view){
@@ -45,30 +46,61 @@ public class ArtActivity extends AppCompatActivity {
     }
 
     public void selectImage(View view){
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Snackbar.make(view,"Permission needed fo the gallery",
-                        Snackbar.LENGTH_INDEFINITE).setAction("Give Permission", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //request permission
 
-                    }
-                }).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            //Android 33+ -> READ_MEDIA_IMAGES
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED){
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_MEDIA_IMAGES)){
+                    Snackbar.make(view,"Permission needed fo the gallery",
+                            Snackbar.LENGTH_INDEFINITE).setAction("Give Permission", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //request permission
+                            permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES  );
+                        }
+                    }).show();
+                }else {
+                    //request permission
+                    permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
+                }
+
             }else {
+                //gallery
+                Intent intentToGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.
+                        EXTERNAL_CONTENT_URI);
+                activityResultLauncher.launch(intentToGallery);
 
             }
-
-            //request permission
-
-        }else {
-            //gallery
-            Intent intentToGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.
-                    EXTERNAL_CONTENT_URI);
-
+        }else{
+            //Android 32- -> READ_EXTERNAL_STORAGE
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    Snackbar.make(view,"Permission needed fo the gallery",
+                            Snackbar.LENGTH_INDEFINITE).setAction("Give Permission", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //request permission
+                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE  );
+                        }
+                    }).show();
+                }else {
+                    //request permission
+                    permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
+            }else {
+                //gallery
+                Intent intentToGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.
+                        EXTERNAL_CONTENT_URI);
+                activityResultLauncher.launch(intentToGallery);
+            }
         }
+
+
+
     }
 
     private void registerLauncher(){
@@ -109,6 +141,7 @@ public class ArtActivity extends AppCompatActivity {
                     // permission granted
                     Intent intentToGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.
                             EXTERNAL_CONTENT_URI);
+                    activityResultLauncher.launch(intentToGallery);
                 }else {
                     //permission denied
                     Toast.makeText(ArtActivity.this,"Permission needed!",
