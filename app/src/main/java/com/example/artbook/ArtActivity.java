@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
@@ -31,6 +33,7 @@ public class ArtActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> activityResultLauncher;
     ActivityResultLauncher<String> permissionLauncher;
     Bitmap selectedImage;
+    SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +53,31 @@ public class ArtActivity extends AppCompatActivity {
 
         Bitmap smallImage = makeSmallerImage(selectedImage, 300); //deneyerek
 
-        //veriye cevir sql e koymak icin dizi
+        //image ı veriye cevir sql e koymak icin dizi
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         smallImage.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
         byte[] byteArray = outputStream.toByteArray();
+
+        try {
+            database = this.openOrCreateDatabase("Arts", MODE_PRIVATE, null); //Arts excelin kendi dosya adı
+            database.execSQL("CREATE TABLE IF NOT EXISTS arts(id INTEGER PRIMARY KEY," + //arts excelin tablo sheet adı
+                    " artname VARCHAR, paintername VARCHAR, year VARCHAR, image BLOB)");
+
+            String sqlString = "INSERT INTO arts (artname, paintername, year, image) VALUES(?,?,?,?)";
+            SQLiteStatement sqLiteStatement = database.compileStatement(sqlString);
+            sqLiteStatement.bindString(1, name);
+            sqLiteStatement.bindString(2, artistname);
+            sqLiteStatement.bindString(3, year);
+            sqLiteStatement.bindBlob(4, byteArray);
+            sqLiteStatement.execute();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Intent intent = new Intent(ArtActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     public Bitmap makeSmallerImage(Bitmap image, int maximumSize){
